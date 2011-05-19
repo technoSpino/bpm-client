@@ -1,7 +1,7 @@
 package com.technospino.jbpm.client.entities;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.fail;
+
 
 import org.junit.After;
 import org.junit.Before;
@@ -143,7 +143,7 @@ public class ProcessDefintionTest {
 
 	@Test
 	public void testEqualsObject() {
-		assertEquals(true,processDefinition1.equals(processDefinition2)); // TODO
+		assertEquals(true,processDefinition1.equals(processDefinition2)); 
 	}
 
 }

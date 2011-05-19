@@ -6,7 +6,7 @@ public class Token {
 	private String name;
 	private String currentNodeName;
 	private String[] children;
-	private String[] availableSignals[];
+	private String[] availableSignals;
 	private boolean canBeSignaled;
 	
 	public Token(){
@@ -45,11 +45,11 @@ public class Token {
 		this.children = children;
 	}
 
-	public String[][] getAvailableSignals() {
+	public String[] getAvailableSignals() {
 		return availableSignals;
 	}
 
-	public void setAvailableSignals(String[][] availableSignals) {
+	public void setAvailableSignals(String[] availableSignals) {
 		this.availableSignals = availableSignals;
 	}
 
@@ -59,5 +59,33 @@ public class Token {
 
 	public void setCanBeSignaled(boolean canBeSignaled) {
 		this.canBeSignaled = canBeSignaled;
+	}
+	
+	@Override
+	public boolean equals(Object that) {
+		//TODO make more robust
+		
+		if (this == that)
+			return true;
+		
+		if (!(that instanceof Token))
+			return false;
+		
+		Token thatToken = (Token) that;
+		if (this.id.equals(thatToken.getId()))
+			return true;
+		
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		int seed = 200394;
+		int result = 0;
+		
+		result += this.id.hashCode()+seed;
+		result += this.currentNodeName.hashCode()+seed;
+		
+		return result;
 	}
 }

@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.technospino.jbpm.client.entities.ProcessDefinition;
+import com.technospino.jbpm.client.entities.ProcessInstance;
 
 public class BPMClientTest {
 
@@ -95,6 +96,8 @@ public class BPMClientTest {
 
 	@Test
 	public void testGetProcessInstances() {
+		ProcessInstance processInstance = new ProcessInstance();
+		
 		fail("Not yet implemented"); // TODO
 	}
 

@@ -49,5 +49,33 @@ public class ProcessInstance {
 		this.rootToken = rootToken;
 	}
 	
+	@Override
+	public boolean equals(Object that) {
+		//TODO make more robust
+		
+		if (this == that)
+			return true;
+		
+		if (!(that instanceof ProcessInstance))
+			return false;
+		
+		ProcessInstance thatProcessInstance = (ProcessInstance) that;
+		if (this.id.equals(thatProcessInstance.getId()) && 
+				this.rootToken.equals(thatProcessInstance.getRootToken()))
+			return true;
+		
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		int seed = -20404;
+		int result = 0;
+		
+		result += this.id.hashCode()+ seed;
+		result += this.definitionId.hashCode()+ seed;
+		
+		return result;
+	}
 	
 }
