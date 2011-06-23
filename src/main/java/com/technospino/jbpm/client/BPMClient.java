@@ -1,6 +1,7 @@
 package com.technospino.jbpm.client;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ import com.technospino.jbpm.client.entities.Token;
 
 /**
  * This class acts as a gateway to the bpm gwt server
- * @author technospino
+ * 
  *
  */
 public class BPMClient {
@@ -40,6 +41,7 @@ public class BPMClient {
 	private static final String SID_URL = "http://localhost:8080/gwt-console-server/rs/identity/secure/sid/";
 	private static final String USER_FIELD = "j_username";
 	private static final String PASS_FIELD = "j_password";
+	private static final String INSTANCES_URL = "http://localhost:8080/gwt-console-server/rs/process/definition/";
 	
 	private String host;
 	private String userName;
@@ -219,13 +221,53 @@ public class BPMClient {
 	
 
 	public boolean newProcessInstance(String processDefinitionId){
-		//TODO Implement
+		HttpPost httpPost = new HttpPost("http://localhost:8080/gwt-console-server/rs/process/definition/"+processDefinitionId+"/new_instance");
+		HttpResponse response = null;
+		
+		try {
+			
+			response = httpClient.execute(httpPost);
+			System.out.println(EntityUtils.toString(response.getEntity()));
+			System.out.println(response.getStatusLine().toString());
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		if (response.getStatusLine().getStatusCode() == 200){
+			return true;
+		}
 		return false;
 	}
 	
 	public List<ProcessInstance> getProcessInstances(String processDefinitionId){
-		//TODO Implement
-		return null;
+		HttpGet  httpGet = new HttpGet(INSTANCES_URL+processDefinitionId+"/instances");
+		HttpResponse response = null;
+		JSONObject responseBody = null;
+		List<ProcessInstance> processDefinitions = new ArrayList<ProcessInstance>();
+		try {
+			response = httpClient.execute(httpGet);
+			responseBody = new JSONObject(EntityUtils.toString(response.getEntity()));
+			JSONArray jsonArray = responseBody.getJSONArray("instances");
+			
+			for (int i = 0; i< jsonArray.length(); i++){
+				processDefinitions.add(parseProcessInstanceJSON(jsonArray.getJSONObject(i)));
+			}
+			
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return processDefinitions;
 	}
 	
 	public boolean removeProcessDefinition(String processDefinitionId){
@@ -341,5 +383,40 @@ public class BPMClient {
 		processDefinition.setPackageName(jsonObject.getString("packageName"));
 		processDefinition.setVersion(jsonObject.getString("version"));
 		return processDefinition;
+	}
+	
+
+	private ProcessInstance parseProcessInstanceJSON(JSONObject jsonObject) throws JSONException {
+		ProcessInstance processInstance = new ProcessInstance();
+		processInstance.setDefinitionId(jsonObject.getString("definitionId"));
+		processInstance.setId(jsonObject.getString("id"));
+		processInstance.setRootToken(parseTokenJSON(jsonObject.getJSONObject("rootToken")));
+		processInstance.setStartDate(jsonObject.getString("startDate"));
+		processInstance.setSuspended(jsonObject.getBoolean("suspended"));
+		return processInstance;
+	}
+	
+	private Token parseTokenJSON(JSONObject jsonObject) throws JSONException {
+		Token token = new Token();
+		token.setAvailableSignals(parseAvailableSignalJSON(jsonObject.getJSONArray("availableSignals")));
+		token.setCanBeSignaled(jsonObject.getBoolean("canBeSignaled"));
+		token.setChildren(parseChildrenJSON(jsonObject.getJSONArray("children")));
+		token.setCurrentNodeName("currentNodeName");
+		token.setId("id");
+		token.setName("name");
+		
+		return token;
+	}
+
+
+	private String[] parseChildrenJSON(JSONArray jsonArray) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	private String[] parseAvailableSignalJSON(JSONArray jsonArray) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

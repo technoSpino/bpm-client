@@ -3,6 +3,8 @@ package com.technospino.jbpm.client;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -91,14 +93,17 @@ public class BPMClientTest {
 
 	@Test
 	public void testNewProcessInstance() {
-		fail("Not yet implemented"); // TODO
+		assertEquals(true,bpmClient.newProcessInstance("com.sample.evaluation"));
 	}
 
 	@Test
 	public void testGetProcessInstances() {
-		ProcessInstance processInstance = new ProcessInstance();
+
 		
-		fail("Not yet implemented"); // TODO
+		List <ProcessInstance> processInstances = bpmClient.getProcessInstances("com.sample.evaluation");
+		assertEquals("com.sample.evaluation", processInstances.get(0).getDefinitionId());
+		assertEquals("com.sample.evaluation", processInstances.get(1).getDefinitionId());
+		
 	}
 
 	@Test
